@@ -1,0 +1,25 @@
+import React, { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
+
+const films = [
+  { title: '海上钢琴师', en: 'The Legend of 1900', year: '1998 · 意大利', genre: '剧情 / 音乐', time: '170 min', score: '9.3', director: '朱塞佩·托纳多雷', quote: '陆地对我来说太大了。', note: '献给那些把热爱留给自己、把世界留在心里的人。', color: '#8c3d2d', image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1400&q=88' },
+  { title: '白日梦想家', en: 'The Secret Life of Walter Mitty', year: '2013 · 美国', genre: '喜剧 / 剧情 / 冒险', time: '114 min', score: '8.6', director: '本·斯蒂勒', quote: '去看世界，去冒险，去超越。', note: '当生活需要一点勇气时，这部电影会推你向前一步。', color: '#27516a', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=88' },
+  { title: '小森林', en: 'Little Forest', year: '2018 · 韩国', genre: '剧情 / 治愈', time: '103 min', score: '8.9', director: '林顺礼', quote: '好好吃饭，就是好好生活。', note: '给疲惫的你，一份不急着抵达的温柔。', color: '#456543', image: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=88' },
+  { title: '爱在黎明破晓前', en: 'Before Sunrise', year: '1995 · 美国', genre: '爱情 / 剧情', time: '101 min', score: '8.8', director: '理查德·林克莱特', quote: '如果世界有魔法，那一定在相遇里。', note: '适合在一个不需要赶路的夜晚，慢慢看完。', color: '#b76b48', image: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=88' }
+];
+function App() {
+  const [index, setIndex] = useState(() => new Date().getDate() % films.length);
+  const [saved, setSaved] = useState(() => localStorage.getItem('cinema-saved') === 'true');
+  const film = films[index]; const now = new Date();
+  useEffect(() => localStorage.setItem('cinema-saved', String(saved)), [saved]);
+  const share = async () => { const data={title:`今日推荐：${film.title}`, text: `${film.quote}｜${film.title}`}; if(navigator.share) await navigator.share(data); else { await navigator.clipboard?.writeText(`${data.title}\n${data.text}`); alert('推荐文案已复制'); }};
+  return <main style={{'--accent':film.color}}>
+    <nav><a className="brand" href="#top">24<span>FPS</span></a><div className="nav-date">{now.getFullYear()} / {String(now.getMonth()+1).padStart(2,'0')} / {String(now.getDate()).padStart(2,'0')}</div><button className="quiet" onClick={share}>分享推荐 ↗</button></nav>
+    <section className="hero" id="top"><div className="poster-wrap"><img src={film.image} alt={`${film.title} 氛围海报`} /><div className="poster-mark">TODAY'S<br/>MOVIE</div></div><article><p className="eyebrow">DAILY CINEMA · NO. {String(index+1).padStart(2,'0')}</p><h1>{film.title}</h1><p className="english">{film.en}</p><p className="meta">{film.year}<i/> {film.genre}<i/> {film.time}</p><blockquote>“{film.quote}”</blockquote><p className="note">{film.note}</p><div className="actions"><button className="primary" onClick={()=>setSaved(!saved)}>{saved ? '已收藏 ✓' : '收藏今天'}</button><button className="outline" onClick={()=>setIndex((index+1)%films.length)}>换一部电影</button></div></article></section>
+    <section className="details"><div><span>导演</span><strong>{film.director}</strong></div><div><span>豆瓣评分</span><strong>{film.score}<em> / 10</em></strong></div><div><span>观影建议</span><strong>留一个完整夜晚</strong></div></section>
+    <section className="calendar"><div><p className="eyebrow">THIS WEEK</p><h2>本周片单</h2></div><div className="film-tabs">{films.map((item,i)=><button className={i===index?'active':''} onClick={()=>setIndex(i)} key={item.title}><b>{String(i+1).padStart(2,'0')}</b><span>{item.title}</span></button>)}</div></section>
+    <footer>每天一部好电影，给生活留一束光。<span>© 2026 24FPS</span></footer>
+  </main>
+}
+createRoot(document.getElementById('root')).render(<App/>);
