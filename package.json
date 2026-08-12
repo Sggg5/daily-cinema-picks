@@ -1,15 +1,5 @@
 {
   "name": "daily-cinema-picks",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build && cp -r out dist",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
-  },
-  "devDependencies": {}
+  "scripts": { "dev": "node server/index.js", "build": "node build.mjs", "start": "node dist/server/index.js" }
 }
